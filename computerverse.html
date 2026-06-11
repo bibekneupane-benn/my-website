@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ComputerVerse – The Complete Evolution of Computers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===================== RESET & BASE ===================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #07080d;
+  --bg2: #0d0f1a;
+  --surface: rgba(255,255,255,0.04);
+  --surface2: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.1);
+  --border2: rgba(255,255,255,0.18);
+  --accent: #6c63ff;
+  --accent2: #00d4ff;
+  --accent3: #ff6b9d;
+  --accent4: #ffd166;
+  --glow: rgba(108,99,255,0.35);
+  --glow2: rgba(0,212,255,0.25);
+  --text: #e8eaf6;
+  --text2: #8892b0;
+  --text3: #ccd6f6;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius: 16px;
+  --radius-sm: 8px;
+  --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.light-mode {
+  --bg: #f0f2ff;
+  --bg2: #e4e8ff;
+  --surface: rgba(108,99,255,0.06);
+  --surface2: rgba(108,99,255,0.12);
+  --border: rgba(108,99,255,0.15);
+  --border2: rgba(108,99,255,0.28);
+  --text: #1a1a2e;
+  --text2: #4a4a6a;
+  --text3: #2d2d5e;
+  --glow: rgba(108,99,255,0.2);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  transition: background 0.4s, color 0.4s;
+}
+/* ===================== SCROLLBAR ===================== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+/* ===================== PROGRESS BAR ===================== */
+#progress-bar {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+  z-index: 9999;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 10px var(--accent);
+}
+
+/* ===================== NAVBAR ===================== */
+#navbar {
+  position: fixed; top: 3px; left: 0; width: 100%; z-index: 1000;
+  padding: 0 5%;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 68px;
+  background: rgba(7,8,13,0.7);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: all var(--transition);
+}
+.light-mode #navbar { background: rgba(240,242,255,0.8); }
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.4rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+.nav-links { display: flex; gap: 2px; list-style: none; }
+.nav-links a {
+  font-size: 0.82rem; font-weight: 500; letter-spacing: 0.04em;
+  color: var(--text2); text-decoration: none; padding: 8px 14px; border-radius: 8px;
+  transition: all var(--transition); text-transform: uppercase;
+}
+.nav-links a:hover, .nav-links a.active {
+  color: var(--text); background: var(--surface2);
+}
+.nav-right { display: flex; gap: 12px; align-items: center; }
+.theme-btn {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 50px; padding: 7px 16px; cursor: pointer;
+  color: var(--text2); font-size: 0.8rem; font-family: var(--font-body);
+  transition: all var(--transition); display: flex; gap: 6px; align-items: center;
+}
+.theme-btn:hover { background: var(--surface2); color: var(--text); }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; }
+.hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: all var(--transition); }
+.mobile-menu {
+  display: none; position: fixed; top: 71px; left: 0; width: 100%; z-index: 999;
+  background: rgba(7,8,13,0.97); backdrop-filter: blur(20px);
+  padding: 20px 5%; border-bottom: 1px solid var(--border);
+}
+.mobile-menu.open { display: flex; flex-direction: column; gap: 4px; }
+.mobile-menu a { color: var(--text2); text-decoration: none; padding: 12px 16px; border-radius: 8px; font-size: 0.9rem; }
+.mobile-menu a:hover { background: var(--surface2); color: var(--text); }
+
+/* ===================== PARTICLES CANVAS ===================== */
+#particles-canvas {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+
+/* ===================== HERO ===================== */
+#home {
+  position: relative; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(108,99,255,0.18) 0%, transparent 70%),
+              radial-gradient(ellipse 50% 40% at 80% 60%, rgba(0,212,255,0.1) 0%, transparent 60%),
+              var(--bg);
+}
+.hero-content {
+  position: relative; z-index: 1; text-align: center;
+  max-width: 900px; padding: 0 24px;
+  animation: heroIn 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-eyebrow {
+  font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.2em;
+  color: var(--accent2); text-transform: uppercase;
+  margin-bottom: 20px; display: inline-block;
+  padding: 6px 16px; border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 50px; background: rgba(0,212,255,0.06);
+}
+.hero-title {
+  font-family: var(--font-display); font-size: clamp(3.5rem, 8vw, 7rem);
+  font-weight: 800; line-height: 0.95; letter-spacing: -0.04em;
+  margin-bottom: 12px;
+}
+.hero-title .grad {
+  background: linear-gradient(135deg, #fff 0%, var(--accent) 40%, var(--accent2) 80%, var(--accent3) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero-sub {
+  font-size: clamp(1rem, 2.5vw, 1.4rem); font-weight: 500;
+  color: var(--text3); margin-bottom: 24px; line-height: 1.3;
+}
+.hero-desc {
+  font-size: 1rem; color: var(--text2); max-width: 600px; margin: 0 auto 48px;
+}
+.hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; border: none; padding: 14px 32px; border-radius: 50px;
+  font-size: 0.95rem; font-weight: 600; font-family: var(--font-body);
+  cursor: pointer; transition: all var(--transition);
+  box-shadow: 0 0 30px var(--glow);
+  text-decoration: none; display: inline-block;
+}
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 50px var(--glow), 0 10px 30px rgba(0,0,0,0.3); }
+.btn-secondary {
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border2); padding: 14px 32px; border-radius: 50px;
+  font-size: 0.95rem; font-weight: 600; font-family: var(--font-body);
+  cursor: pointer; transition: all var(--transition); text-decoration: none; display: inline-block;
+  backdrop-filter: blur(8px);
+}
+.btn-secondary:hover { background: var(--surface2); transform: translateY(-3px); border-color: var(--accent); }
+
+/* ===================== SECTION BASE ===================== */
+section { padding: 100px 5%; }
+.section-eyebrow {
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.18em;
+  color: var(--accent); text-transform: uppercase; margin-bottom: 12px; display: block;
+}
+.section-title {
+  font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800; line-height: 1.05; letter-spacing: -0.03em;
+  margin-bottom: 16px;
+}
+.section-desc { color: var(--text2); font-size: 1rem; max-width: 560px; }
+.section-header { margin-bottom: 60px; }
+.section-header.centered { text-align: center; }
+.section-header.centered .section-desc { margin: 0 auto; }
+
+/* ===================== SEARCH BAR ===================== */
+.search-wrap {
+  position: relative; max-width: 560px; margin: 0 auto 60px;
+}
+#search-input {
+  width: 100%; padding: 14px 50px 14px 22px;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: 50px; color: var(--text); font-size: 0.95rem;
+  font-family: var(--font-body); outline: none; transition: all var(--transition);
+  backdrop-filter: blur(8px);
+}
+#search-input::placeholder { color: var(--text2); }
+#search-input:focus { border-color: var(--accent); box-shadow: 0 0 20px var(--glow); }
+.search-icon {
+  position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+  color: var(--text2); pointer-events: none; font-size: 1.1rem;
+}
+#search-results {
+  position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: var(--radius); overflow: hidden; display: none; z-index: 500;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+#search-results.visible { display: block; }
+.search-result-item {
+  padding: 12px 20px; cursor: pointer; border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+}
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: var(--surface2); }
+.search-result-item .hit-cat { font-size: 0.7rem; color: var(--accent); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; }
+.search-result-item .hit-title { font-size: 0.9rem; font-weight: 600; }
+mark { background: rgba(108,99,255,0.35); color: var(--accent2); border-radius: 2px; padding: 0 2px; }
+
+/* ===================== TIMELINE ===================== */
+#timeline { background: var(--bg2); }
+.timeline-container { position: relative; max-width: 1100px; margin: 0 auto; }
+.timeline-container::before {
+  content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
+  background: linear-gradient(180deg, transparent, var(--accent), var(--accent2), var(--accent3), transparent);
+  transform: translateX(-50%);
+}
+.tl-item {
+  display: flex; align-items: flex-start; gap: 40px;
+  margin-bottom: 60px; position: relative; opacity: 0; transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.tl-item.visible { opacity: 1; transform: translateY(0); }
+.tl-item:nth-child(odd) { flex-direction: row-reverse; }
+.tl-item:nth-child(odd) .tl-card { text-align: right; }
+.tl-dot {
+  position: absolute; left: 50%; top: 28px; transform: translateX(-50%);
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--accent); border: 3px solid var(--bg2);
+  box-shadow: 0 0 16px var(--glow); z-index: 2; flex-shrink: 0;
+  transition: all var(--transition);
+}
+.tl-item:hover .tl-dot { transform: translateX(-50%) scale(1.6); box-shadow: 0 0 28px var(--accent); }
+.tl-card {
+  width: calc(50% - 40px); background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: hidden; transition: all var(--transition);
+  backdrop-filter: blur(12px);
+}
+.tl-card:hover {
+  border-color: var(--accent); transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 30px var(--glow);
+}
+.tl-img {
+  width: 100%; height: 200px; object-fit: cover;
+  background: linear-gradient(135deg, var(--surface2), var(--bg2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 4rem; overflow: hidden;
+}
+.tl-img img { width: 100%; height: 100%; object-fit: cover; }
+.tl-body { padding: 24px; }
+.tl-year {
+  font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent2);
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px;
+}
+.tl-title {
+  font-family: var(--font-display); font-size: 1.2rem; font-weight: 700;
+  margin-bottom: 10px; color: var(--text);
+}
+.tl-desc { font-size: 0.88rem; color: var(--text2); line-height: 1.6; margin-bottom: 14px; }
+.tl-fact {
+  font-size: 0.82rem; color: var(--accent4); font-style: italic;
+  padding: 10px 14px; background: rgba(255,209,102,0.06);
+  border-left: 3px solid var(--accent4); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.tl-item:nth-child(odd) .tl-fact { border-left: none; border-right: 3px solid var(--accent4); text-align: right; }
+
+/* ===================== GENERATIONS ===================== */
+#generations { background: var(--bg); }
+.gen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; }
+.gen-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: all var(--transition);
+  backdrop-filter: blur(12px); position: relative;
+}
+.gen-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  opacity: 0; transition: opacity var(--transition);
+}
+.gen-card:hover { transform: translateY(-8px); box-shadow: 0 24px 70px rgba(0,0,0,0.4), 0 0 30px var(--glow); border-color: var(--accent); }
+.gen-card:hover::before { opacity: 1; }
+.gen-img { height: 180px; background: linear-gradient(135deg, var(--surface2), rgba(108,99,255,0.1)); display: flex; align-items: center; justify-content: center; font-size: 3.5rem; overflow: hidden; position: relative; }
+.gen-img img { width: 100%; height: 100%; object-fit: cover; }
+.gen-num {
+  position: absolute; top: 12px; right: 12px;
+  font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em;
+  color: var(--accent); background: rgba(108,99,255,0.15);
+  border: 1px solid rgba(108,99,255,0.3); padding: 4px 10px; border-radius: 50px;
+}
+.gen-body { padding: 24px; }
+.gen-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+.gen-years { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent2); margin-bottom: 16px; letter-spacing: 0.1em; }
+.gen-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.gen-list li { font-size: 0.84rem; color: var(--text2); padding-left: 16px; position: relative; }
+.gen-list li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.gen-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.gen-tag { font-size: 0.72rem; padding: 4px 10px; border-radius: 50px; background: var(--surface2); border: 1px solid var(--border); color: var(--text2); font-family: var(--font-mono); letter-spacing: 0.06em; }
+
+/* ===================== INNOVATORS ===================== */
+#innovators { background: var(--bg2); }
+.innov-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px; }
+.innov-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 32px 24px; text-align: center;
+  transition: all var(--transition); backdrop-filter: blur(12px); position: relative; overflow: hidden;
+}
+.innov-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(108,99,255,0.12), transparent 70%);
+  opacity: 0; transition: opacity var(--transition);
+}
+.innov-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 24px 70px rgba(0,0,0,0.4), 0 0 30px var(--glow); }
+.innov-card:hover::after { opacity: 1; }
+.innov-avatar {
+  width: 90px; height: 90px; border-radius: 50%;
+  margin: 0 auto 18px;
+  border: 3px solid var(--accent);
+  box-shadow: 0 0 20px var(--glow);
+  overflow: hidden; background: var(--surface2);
+  display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
+  transition: all var(--transition);
+}
+.innov-card:hover .innov-avatar { transform: scale(1.1); box-shadow: 0 0 35px var(--glow); }
+.innov-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.innov-name { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; margin-bottom: 2px; }
+.innov-years { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent2); letter-spacing: 0.1em; margin-bottom: 14px; }
+.innov-bio { font-size: 0.83rem; color: var(--text2); line-height: 1.6; margin-bottom: 14px; }
+.innov-achiev { text-align: left; }
+.innov-achiev h4 { font-size: 0.75rem; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; font-family: var(--font-mono); }
+.innov-achiev ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.innov-achiev li { font-size: 0.8rem; color: var(--text2); padding-left: 14px; position: relative; }
+.innov-achiev li::before { content: '✦'; position: absolute; left: 0; color: var(--accent); font-size: 0.55rem; top: 3px; }
+.innov-quote {
+  margin-top: 16px; font-style: italic; font-size: 0.82rem; color: var(--text3);
+  padding: 10px 14px; background: var(--surface2); border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent3);
+  position: relative; z-index: 1;
+}
+
+/* ===================== GALLERY ===================== */
+#gallery { background: var(--bg); }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.gallery-item {
+  position: relative; border-radius: var(--radius); overflow: hidden;
+  aspect-ratio: 4/3; cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: all var(--transition);
+}
+.gallery-item:hover { transform: scale(1.04); box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px var(--glow); border-color: var(--accent); z-index: 2; }
+.gallery-item-inner { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 20px; }
+.gallery-emoji { font-size: 3.5rem; }
+.gallery-label { font-size: 0.85rem; font-weight: 600; color: var(--text2); text-align: center; }
+.gallery-overlay {
+  position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(7,8,13,0.85));
+  opacity: 0; transition: opacity var(--transition); display: flex; align-items: flex-end; padding: 16px;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-overlay-text { color: #fff; font-size: 0.85rem; font-weight: 600; }
+
+/* ===================== STATS ===================== */
+#stats { background: var(--bg2); padding: 80px 5%; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 28px; max-width: 900px; margin: 0 auto; }
+.stat-card {
+  text-align: center; padding: 36px 24px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); transition: all var(--transition);
+  backdrop-filter: blur(12px);
+}
+.stat-card:hover { border-color: var(--accent); box-shadow: 0 0 30px var(--glow); transform: translateY(-4px); }
+.stat-num {
+  font-family: var(--font-display); font-size: 2.8rem; font-weight: 800; line-height: 1;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 8px;
+}
+.stat-label { font-size: 0.83rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.1em; font-family: var(--font-mono); }
+
+/* ===================== QUIZ ===================== */
+#quiz { background: var(--bg); }
+.quiz-container { max-width: 700px; margin: 0 auto; }
+.quiz-progress-wrap { height: 6px; background: var(--surface); border-radius: 3px; margin-bottom: 32px; overflow: hidden; }
+.quiz-progress-inner { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.4s ease; }
+.quiz-q-num { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); margin-bottom: 10px; letter-spacing: 0.1em; }
+.quiz-question { font-size: 1.2rem; font-weight: 600; margin-bottom: 24px; line-height: 1.4; }
+.quiz-options { display: flex; flex-direction: column; gap: 12px; }
+.quiz-opt {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 14px 20px; cursor: pointer; transition: all var(--transition);
+  font-size: 0.9rem; text-align: left; font-family: var(--font-body); color: var(--text);
+  display: flex; gap: 12px; align-items: center;
+}
+.quiz-opt:hover { background: var(--surface2); border-color: var(--accent); }
+.quiz-opt.correct { background: rgba(0,212,100,0.12); border-color: #00d464; color: #00d464; }
+.quiz-opt.wrong { background: rgba(255,80,80,0.1); border-color: #ff5050; color: #ff5050; }
+.quiz-opt-letter { width: 28px; height: 28px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-family: var(--font-mono); flex-shrink: 0; border: 1px solid var(--border); }
+.quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+.quiz-score-screen { text-align: center; padding: 40px 20px; }
+.quiz-score-big { font-family: var(--font-display); font-size: 4rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.quiz-score-label { color: var(--text2); font-size: 1rem; margin-bottom: 8px; }
+.quiz-feedback { font-size: 1.1rem; font-weight: 600; margin-bottom: 28px; }
+
+/* ===================== FUTURE ===================== */
+#future { background: var(--bg2); position: relative; overflow: hidden; }
+#future::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(108,99,255,0.08), transparent);
+  pointer-events: none;
+}
+.future-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px; }
+.future-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 32px 24px; transition: all var(--transition); backdrop-filter: blur(12px);
+  position: relative; overflow: hidden;
+}
+.future-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+  opacity: 0; transition: opacity var(--transition);
+}
+.future-card:hover { transform: translateY(-8px); border-color: var(--accent2); box-shadow: 0 24px 70px rgba(0,0,0,0.4), 0 0 30px var(--glow2); }
+.future-card:hover::before { opacity: 1; }
+.future-icon { font-size: 2.8rem; margin-bottom: 18px; }
+.future-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
+.future-desc { font-size: 0.85rem; color: var(--text2); line-height: 1.65; }
+.future-badge { margin-top: 16px; display: inline-block; font-size: 0.7rem; font-family: var(--font-mono); padding: 4px 12px; border-radius: 50px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: var(--accent2); letter-spacing: 0.08em; }
+
+/* ===================== FOOTER ===================== */
+footer {
+  background: var(--bg); border-top: 1px solid var(--border);
+  padding: 64px 5% 32px;
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-brand { max-width: 320px; }
+.footer-logo { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 14px; display: block; }
+.footer-brand p { font-size: 0.85rem; color: var(--text2); line-height: 1.7; }
+.footer-col h4 { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text); margin-bottom: 16px; font-family: var(--font-mono); }
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-links a { font-size: 0.85rem; color: var(--text2); text-decoration: none; transition: color var(--transition); }
+.footer-links a:hover { color: var(--accent); }
+.social-links { display: flex; gap: 12px; flex-wrap: wrap; }
+.social-link { width: 38px; height: 38px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition); text-decoration: none; color: var(--text2); font-size: 1rem; }
+.social-link:hover { background: var(--accent); border-color: var(--accent); color: #fff; transform: translateY(-2px); }
+.footer-bottom { border-top: 1px solid var(--border); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: gap; gap: 12px; }
+.footer-copy { font-size: 0.8rem; color: var(--text2); }
+
+/* ===================== BACK TO TOP ===================== */
+#back-top {
+  position: fixed; bottom: 28px; right: 28px; z-index: 800;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none; cursor: pointer; display: none; align-items: center; justify-content: center;
+  font-size: 1.2rem; color: #fff; box-shadow: 0 0 20px var(--glow);
+  transition: all var(--transition);
+}
+#back-top.show { display: flex; }
+#back-top:hover { transform: translateY(-4px); box-shadow: 0 0 36px var(--glow); }
+
+/* ===================== FADE IN ===================== */
+.fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .timeline-container::before { left: 24px; }
+  .tl-item, .tl-item:nth-child(odd) { flex-direction: column; padding-left: 60px; }
+  .tl-card, .tl-item:nth-child(odd) .tl-card { width: 100%; text-align: left; }
+  .tl-dot { left: 24px; }
+  .tl-item:nth-child(odd) .tl-fact { border-left: 3px solid var(--accent4); border-right: none; text-align: left; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+@media (max-width: 600px) {
+  section { padding: 70px 5%; }
+  .hero-btns { flex-direction: column; align-items: center; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.1ms !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div id="progress-bar"></div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#home" class="nav-logo">ComputerVerse</a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#generations">Generations</a></li>
+    <li><a href="#innovators">Innovators</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#quiz">Quiz</a></li>
+    <li><a href="#future">Future</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-btn">☀️ Light</button>
+    <div class="hamburger" id="hamburger" role="button" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#home">Home</a>
+  <a href="#timeline">Timeline</a>
+  <a href="#generations">Generations</a>
+  <a href="#innovators">Innovators</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#quiz">Quiz</a>
+  <a href="#future">Future</a>
+</div>
+
+<!-- HERO -->
+<section id="home">
+  <canvas id="particles-canvas"></canvas>
+  <div class="hero-content">
+    <span class="hero-eyebrow">Digital Museum of Computer History</span>
+    <h1 class="hero-title"><span class="grad">ComputerVerse</span></h1>
+    <p class="hero-sub">Journey Through the Complete History of Computers</p>
+    <p class="hero-desc">Explore the incredible evolution of computers — from the ancient Abacus to Artificial Intelligence and the future of Quantum Computing.</p>
+    <div class="hero-btns">
+      <a href="#timeline" class="btn-primary">Explore Timeline</a>
+      <a href="#innovators" class="btn-secondary">Meet the Innovators</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="stats-grid">
+    <div class="stat-card fade-in">
+      <div class="stat-num" data-target="5000">0</div>
+      <div class="stat-label">Years Covered</div>
+    </div>
+    <div class="stat-card fade-in">
+      <div class="stat-num" data-target="7">0</div>
+      <div class="stat-label">Innovators</div>
+    </div>
+    <div class="stat-card fade-in">
+      <div class="stat-num" data-target="5">0</div>
+      <div class="stat-label">Computer Generations</div>
+    </div>
+    <div class="stat-card fade-in">
+      <div class="stat-num" data-target="20">0</div>
+      <div class="stat-label">Major Technologies</div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="section-header">
+    <span class="section-eyebrow">Interactive Timeline</span>
+    <h2 class="section-title">The Complete Evolution</h2>
+    <p class="section-desc">Trace every milestone in computing history — from counting beads to quantum bits.</p>
+  </div>
+  <div class="search-wrap">
+    <input type="text" id="search-input" placeholder="Search timeline, innovators, technologies…">
+    <span class="search-icon">🔍</span>
+    <div id="search-results"></div>
+  </div>
+  <div class="timeline-container" id="timeline-container">
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-img">🧮</div>
+        <div class="tl-body">
+          <div class="tl-year">3000 BC</div>
+          <div class="tl-title">Abacus — The First Calculator</div>
+          <div class="tl-desc">The abacus, originating in ancient Mesopotamia and later refined in China, was humanity's first computational tool. Using sliding beads on rods, skilled operators could perform addition, subtraction, multiplication, and division with remarkable speed. Merchants, traders, and tax collectors across civilizations relied on it for thousands of years. Its basic principle — positional notation — would echo through every computing system that followed.</div>
+          <div class="tl-fact">⚡ Fun Fact: Expert abacus users can solve arithmetic problems faster than some modern calculators.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-img">⚙️</div>
+        <div class="tl-body">
+          <div class="tl-year">1642</div>
+          <div class="tl-title">Pascaline — First Mechanical Calculator</div>
+          <div class="tl-desc">At just 18 years old, Blaise Pascal invented the Pascaline to help his father, a tax accountant, manage tedious arithmetic. The machine used a series of interlocking gears and wheels — each representing a digit — to add numbers automatically. Ten models were built, of which eight survive. It was the first successful mechanical calculator commercially sold, and introduced the concept of carry propagation in mechanical computation.</div>
+          <div class="tl-fact">⚡ Fun Fact: Pascal built his first prototype after three years and 50 failed prototypes.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-img">🔩</div>
+        <div class="tl-body">
+          <div class="tl-year">1837</div>
+          <div class="tl-title">Analytical Engine — Blueprint of the Modern Computer</div>
+          <div class="tl-desc">Charles Babbage conceived the Analytical Engine, a mechanical general-purpose computer that incorporated an arithmetic logic unit (called the "mill"), a control flow via conditional branching and loops, and memory ("store"). Though never completed in his lifetime, its conceptual design anticipated every fundamental aspect of modern computers by over a century. Babbage collaborated with Ada Lovelace, who wrote the first algorithm intended for the machine — making her the world's first programmer.</div>
+          <div class="tl-fact">⚡ Fun Fact: A portion of the Analytical Engine was built posthumously and is on display at the Science Museum in London.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-img">👩‍💻</div>
+        <div class="tl-body">
+          <div class="tl-year">1843</div>
+          <div class="tl-title">Ada Lovelace — The World's First Programmer</div>
+          <div class="tl-desc">Ada Lovelace, the daughter of Lord Byron and mathematician Anne Isabella Milbanke, translated an article on the Analytical Engine by Luigi Menabrea — but added her own extensive notes that were three times longer than the original. Note G contained a step-by-step algorithm for computing Bernoulli numbers, the first published algorithm specifically designed for execution on a machine. Her vision extended beyond mere calculation: she saw that machines could manipulate symbols according to rules, and thus could be used for music, graphics, and general-purpose tasks.</div>
+          <div class="tl-fact">⚡ Fun Fact: The programming language "Ada," used by the US Department of Defense, was named in her honor.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-img">💡</div>
+        <div class="tl-body">
+          <div class="tl-year">1936</div>
+          <div class="tl-title">Turing Machine — The Theoretical Foundation</div>
+          <div class="tl-desc">Alan Turing introduced the theoretical concept of a universal computing machine in his landmark 1936 paper "On Computable Numbers." The Turing Machine was a thought experiment — an infinite tape of symbols and a read/write head — that proved any computation could be formalized and mechanized. This laid the mathematical foundation for all modern computer science, defined the limits of what computers can compute, and introduced the concept of algorithms as formal procedures.</div>
+          <div class="tl-fact">⚡ Fun Fact: The Church-Turing thesis, building on this work, remains a foundational principle of computer science to this day.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-img">🏭</div>
+        <div class="tl-body">
+          <div class="tl-year">1945</div>
+          <div class="tl-title">ENIAC — First Electronic General-Purpose Computer</div>
+          <div class="tl-desc">The Electronic Numerical Integrator and Computer (ENIAC), built at the University of Pennsylvania by John Mauchly and J. Presper Eckert, was the first general-purpose electronic digital computer. Weighing 30 tons and occupying 1,800 square feet, it contained 17,468 vacuum tubes, 70,000 resistors, and consumed 150,000 watts of power. ENIAC could perform 5,000 additions per second — a monumental leap from mechanical calculators. Its primary mission was calculating artillery firing tables for the US Army.</div>
+          <div class="tl-fact">⚡ Fun Fact: Six women — Kay McNulty, Betty Jennings, Frances Synder, Marlyn Wescoff, Frances Bilas, and Ruth Lichterman — were the original programmers of ENIAC.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-img">🔌</div>
+        <div class="tl-body">
+          <div class="tl-year">1950s</div>
+          <div class="tl-title">First Generation — Vacuum Tube Era</div>
+          <div class="tl-desc">First-generation computers used vacuum tubes as their primary electronic component for circuitry and magnetic drums for memory. Machines like UNIVAC I, IBM 701, and IBM 650 were enormous — filling entire rooms — and extremely expensive to build and operate. They used machine language exclusively, generated enormous amounts of heat, and were prone to frequent failures. Despite these limitations, they represented a revolutionary leap — the birth of the commercial computing industry.</div>
+          <div class="tl-fact">⚡ Fun Fact: UNIVAC I correctly predicted the 1952 US Presidential election for CBS News, shocking viewers nationwide.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-img">📻</div>
+        <div class="tl-body">
+          <div class="tl-year">1950s–60s</div>
+          <div class="tl-title">Second Generation — Transistor Revolution</div>
+          <div class="tl-desc">The invention of the transistor at Bell Labs in 1947 transformed computing. By the late 1950s, transistors replaced vacuum tubes — making computers smaller, cheaper, faster, more reliable, and far less power-hungry. This generation introduced symbolic assembly languages and high-level programming languages like FORTRAN and COBOL. Machines like the IBM 7090 and CDC 1604 brought computing to universities, research institutions, and larger businesses. Magnetic core memory replaced magnetic drums, dramatically improving speed and reliability.</div>
+          <div class="tl-fact">⚡ Fun Fact: The transistor's inventors — Shockley, Bardeen, and Brattain — won the 1956 Nobel Prize in Physics.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-img">🔬</div>
+        <div class="tl-body">
+          <div class="tl-year">1960s–70s</div>
+          <div class="tl-title">Third Generation — Integrated Circuits</div>
+          <div class="tl-desc">Jack Kilby at Texas Instruments invented the integrated circuit (IC) in 1958, packing multiple transistors onto a single silicon chip. This triggered an explosion of computing capability — IBM's System/360, released in 1964, became the dominant mainframe series of the era, establishing a model of compatible machine families. Operating systems emerged, enabling time-sharing and multi-user environments. High-level languages flourished. Minicomputers like the DEC PDP series brought computing to mid-sized organizations for the first time.</div>
+          <div class="tl-fact">⚡ Fun Fact: The IBM System/360 cost $5 billion to develop — the most expensive privately funded project at the time.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-img">💾</div>
+        <div class="tl-body">
+          <div class="tl-year">1971–Present</div>
+          <div class="tl-title">Fourth Generation — Microprocessors &amp; Personal Computers</div>
+          <div class="tl-desc">Intel's release of the 4004 microprocessor in 1971 — placing the entire CPU on a single chip — ignited the PC revolution. The Altair 8800 (1975), Apple I (1976), Apple II (1977), and IBM PC (1981) brought computing to individuals. Microsoft's DOS and later Windows, combined with Intel's x86 architecture, established the Wintel platform that dominated for decades. The Macintosh (1984) introduced the graphical user interface to the mass market. Computing became personal, then ubiquitous.</div>
+          <div class="tl-fact">⚡ Fun Fact: The Intel 4004 had 2,300 transistors. Today's chips have over 100 billion.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-img">🌐</div>
+        <div class="tl-body">
+          <div class="tl-year">1991</div>
+          <div class="tl-title">The Internet Revolution — World Wide Web Goes Public</div>
+          <div class="tl-desc">Tim Berners-Lee invented the World Wide Web in 1989 while working at CERN, and it opened to the public in 1991. By combining hypertext, URLs, HTTP, and HTML, the Web transformed the internet from a research tool into a global communication and commerce platform. The first graphical browser, Mosaic (1993), made it accessible to non-technical users. By the mid-1990s, the dot-com era had begun. Email, e-commerce, social media, and cloud computing followed — fundamentally reshaping civilization.</div>
+          <div class="tl-fact">⚡ Fun Fact: The world's first website (info.cern.ch) is still live and accessible today.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-img">🤖</div>
+        <div class="tl-body">
+          <div class="tl-year">2010s–Present</div>
+          <div class="tl-title">Artificial Intelligence Era — Deep Learning Breakthrough</div>
+          <div class="tl-desc">The convergence of massive datasets, GPU computing, and deep neural networks triggered an AI renaissance in the 2010s. AlexNet's 2012 ImageNet victory demonstrated that deep learning far surpassed traditional methods in image recognition. Google DeepMind's AlphaGo defeated the world's best Go player in 2016. Transformer architecture (2017) led to large language models like GPT, BERT, and Claude. By the early 2020s, generative AI became mainstream — reshaping art, science, medicine, and the nature of work itself.</div>
+          <div class="tl-fact">⚡ Fun Fact: GPT-4 was trained on roughly 1 trillion words of text — more than a human could read in 100,000 lifetimes.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- GENERATIONS -->
+<section id="generations">
+  <div class="section-header">
+    <span class="section-eyebrow">Five Generations</span>
+    <h2 class="section-title">The Generations of Computing</h2>
+    <p class="section-desc">Each generation brought an order-of-magnitude leap in power, miniaturization, and accessibility.</p>
+  </div>
+  <div class="gen-grid" id="gen-grid">
+
+    <div class="gen-card fade-in">
+      <div class="gen-img">💡<span class="gen-num">GEN 01</span></div>
+      <div class="gen-body">
+        <div class="gen-title">First Generation</div>
+        <div class="gen-years">1940 – 1956</div>
+        <ul class="gen-list">
+          <li>Used vacuum tubes for circuitry</li>
+          <li>Magnetic drums for memory</li>
+          <li>Machine language programming</li>
+          <li>Room-sized, extremely expensive</li>
+          <li>Generated excessive heat</li>
+          <li>High failure rate, slow processing</li>
+        </ul>
+        <div class="gen-tags">
+          <span class="gen-tag">Vacuum Tubes</span>
+          <span class="gen-tag">ENIAC</span>
+          <span class="gen-tag">UNIVAC</span>
+          <span class="gen-tag">Machine Code</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gen-card fade-in">
+      <div class="gen-img">📡<span class="gen-num">GEN 02</span></div>
+      <div class="gen-body">
+        <div class="gen-title">Second Generation</div>
+        <div class="gen-years">1956 – 1963</div>
+        <ul class="gen-list">
+          <li>Transistors replaced vacuum tubes</li>
+          <li>Magnetic core memory introduced</li>
+          <li>Assembly language &amp; FORTRAN/COBOL</li>
+          <li>Smaller, faster, more reliable</li>
+          <li>Batch processing systems</li>
+          <li>Used by businesses &amp; universities</li>
+        </ul>
+        <div class="gen-tags">
+          <span class="gen-tag">Transistors</span>
+          <span class="gen-tag">FORTRAN</span>
+          <span class="gen-tag">COBOL</span>
+          <span class="gen-tag">IBM 7090</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gen-card fade-in">
+      <div class="gen-img">🔬<span class="gen-num">GEN 03</span></div>
+      <div class="gen-body">
+        <div class="gen-title">Third Generation</div>
+        <div class="gen-years">1963 – 1971</div>
+        <ul class="gen-list">
+          <li>Integrated circuits on silicon chips</li>
+          <li>Operating systems emerged</li>
+          <li>Time-sharing &amp; multi-user systems</li>
+          <li>IBM System/360 standardized mainframes</li>
+          <li>Minicomputers (DEC PDP) appeared</li>
+          <li>High-level languages proliferated</li>
+        </ul>
+        <div class="gen-tags">
+          <span class="gen-tag">ICs</span>
+          <span class="gen-tag">IBM 360</span>
+          <span class="gen-tag">OS/360</span>
+          <span class="gen-tag">Minicomputers</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gen-card fade-in">
+      <div class="gen-img">💻<span class="gen-num">GEN 04</span></div>
+      <div class="gen-body">
+        <div class="gen-title">Fourth Generation</div>
+        <div class="gen-years">1971 – 2010</div>
+        <ul class="gen-list">
+          <li>Microprocessors — entire CPU on one chip</li>
+          <li>Personal computers for home use</li>
+          <li>GUI operating systems (Mac OS, Windows)</li>
+          <li>VLSI — millions of transistors per chip</li>
+          <li>Internet &amp; the World Wide Web</li>
+          <li>Laptops, smartphones, ubiquitous computing</li>
+        </ul>
+        <div class="gen-tags">
+          <span class="gen-tag">Intel 4004</span>
+          <span class="gen-tag">Apple Mac</span>
+          <span class="gen-tag">Windows</span>
+          <span class="gen-tag">Internet</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gen-card fade-in">
+      <div class="gen-img">🧠<span class="gen-num">GEN 05</span></div>
+      <div class="gen-body">
+        <div class="gen-title">Fifth Generation</div>
+        <div class="gen-years">2010 – Present</div>
+        <ul class="gen-list">
+          <li>Artificial intelligence &amp; machine learning</li>
+          <li>Natural language processing</li>
+          <li>Parallel processing &amp; neural networks</li>
+          <li>Cloud &amp; edge computing at scale</li>
+          <li>Quantum computing (emerging)</li>
+          <li>Brain-computer interfaces (in development)</li>
+        </ul>
+        <div class="gen-tags">
+          <span class="gen-tag">AI / ML</span>
+          <span class="gen-tag">Deep Learning</span>
+          <span class="gen-tag">Cloud</span>
+          <span class="gen-tag">Quantum</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- INNOVATORS -->
+<section id="innovators">
+  <div class="section-header">
+    <span class="section-eyebrow">The Visionaries</span>
+    <h2 class="section-title">Innovators Who Changed the World</h2>
+    <p class="section-desc">The minds whose ideas, obsessions, and breakthroughs shaped the digital age.</p>
+  </div>
+  <div class="innov-grid" id="innov-grid">
+
+    <div class="innov-card fade-in">
+      <div class="innov-avatar">🎩</div>
+      <div class="innov-name">Charles Babbage</div>
+      <div class="innov-years">1791 – 1871</div>
+      <div class="innov-bio">An English polymath — mathematician, philosopher, inventor, and mechanical engineer — Babbage originated the concept of a programmable computer. He spent decades designing and partly building the Difference Engine and Analytical Engine, pioneering concepts of a stored program, conditional branching, and loops more than a century before the digital era.</div>
+      <div class="innov-achiev">
+        <h4>Major Achievements</h4>
+        <ul>
+          <li>Invented the Difference Engine (1822)</li>
+          <li>Designed the Analytical Engine (1837) — world's first general-purpose computer design</li>
+          <li>Introduced the concept of a stored program</li>
+          <li>Pioneered operations research and actuarial science</li>
+        </ul>
+      </div>
+      <div class="innov-quote">"The only good reasons for doing anything are: because you want to, because you must, or because no one else will."</div>
+    </div>
+
+    <div class="innov-card fade-in">
+      <div class="innov-avatar">👑</div>
+      <div class="innov-name">Ada Lovelace</div>
+      <div class="innov-years">1815 – 1852</div>
+      <div class="innov-bio">Daughter of poet Lord Byron and mathematician Anne Isabella Milbanke, Ada showed exceptional aptitude for mathematics from childhood. She became the first person to recognize that a computing machine could transcend pure arithmetic — it could compose music, produce graphics, and be used for any purpose if given the right instructions. Her 1843 notes on the Analytical Engine contained the world's first published algorithm.</div>
+      <div class="innov-achiev">
+        <h4>Major Achievements</h4>
+        <ul>
+          <li>Authored the first algorithm for mechanical computation</li>
+          <li>First to envision computers beyond pure calculation</li>
+          <li>Pioneer of computational thinking in the pre-digital age</li>
+          <li>Programming language "Ada" named in her honor</li>
+        </ul>
+      </div>
+      <div class="innov-quote">"The Analytical Engine weaves algebraical patterns just as the Jacquard loom weaves flowers and leaves."</div>
+    </div>
+
+    <div class="innov-card fade-in">
+      <div class="innov-avatar">🔐</div>
+      <div class="innov-name">Alan Turing</div>
+      <div class="innov-years">1912 – 1954</div>
+      <div class="innov-bio">Often called the father of computer science and artificial intelligence, Alan Turing's theoretical work underpins all of modern computing. He defined the mathematical concept of a "universal computing machine," broke the Nazi Enigma code during WWII (saving millions of lives), and asked the foundational question of AI: "Can machines think?" His tragic death from cyanide poisoning — likely suicide after chemical castration ordered by the British government — remains one of history's great injustices.</div>
+      <div class="innov-achiev">
+        <h4>Major Achievements</h4>
+        <ul>
+          <li>Invented the theoretical Turing Machine (1936)</li>
+          <li>Broke the Enigma cipher at Bletchley Park (WWII)</li>
+          <li>Introduced the Turing Test for machine intelligence (1950)</li>
+          <li>Developed the ACE — one of Britain's first computers</li>
+        </ul>
+      </div>
+      <div class="innov-quote">"We can only see a short distance ahead, but we can see plenty there that needs to be done."</div>
+    </div>
+
+    <div class="innov-card fade-in">
+      <div class="innov-avatar">🍎</div>
+      <div class="innov-name">Steve Jobs</div>
+      <div class="innov-years">1955 – 2011</div>
+      <div class="innov-bio">Co-founder of Apple Inc., Pixar, and NeXT, Steve Jobs was the archetype of the visionary product designer. He had an extraordinary ability to anticipate what people wanted before they knew they wanted it. The Macintosh introduced the GUI to mass audiences; the iPod reinvented the music industry; the iPhone launched the smartphone era; the App Store created a new economic model. Jobs understood that the deepest human technology is the one that disappears into life.</div>
+      <div class="innov-achiev">
+        <h4>Major Achievements</h4>
+        <ul>
+          <li>Co-founded Apple Computer (1976) with Wozniak</li>
+          <li>Launched the Macintosh with GUI (1984)</li>
+          <li>Returned Apple from near-bankruptcy to world's most valuable company</li>
+          <li>Introduced iPhone (2007) — revolutionized mobile computing</li>
+        </ul>
+      </div>
+      <div class="innov-quote">"Design is not just what it looks like and feels like. Design is how it works."</div>
+    </div>
+
+    <div class="innov-card fade-in">
+      <div class="innov-avatar">🪟</div>
+      <div class="innov-name">Bill Gates</div>
+      <div class="innov-years">1955 – Present</div>
+      <div class="innov-bio">Co-founder of Microsoft and its CEO until 2000, Bill Gates drove the personal computer revolution by ensuring that every PC ran software that Microsoft built. His decision to license DOS to IBM while retaining rights proved to be one of the shrewdest business moves in technology history. Under his leadership, Microsoft created Windows, Office, and Internet Explorer, making software the most powerful force in personal computing. Since 2000, he has focused on philanthropy through the Bill &amp; Melinda Gates Foundation.</div>
+      <div class="innov-achiev">
+        <h4>Major Achievements</h4>
+        <ul>
+          <li>Co-founded Microsoft Corporation (1975)</li>
+          <li>Licensed MS-DOS to IBM — establishing PC software dominance</li>
+          <li>Launched Windows OS series from 1985 onwards</li>
+          <li>Built world's largest private philanthropic foundation</li>
+        </ul>
+      </div>
+      <div class="innov-quote">"Success is a lousy teacher. It seduces smart people into thinking they can't lose."</div>
+    </div>
+
+    <div class="innov-card fade-in">
+      <div class="innov-avatar">🌐</div>
+      <div class="innov-name">Tim Berners-Lee</div>
+      <div class="innov-years">1955 – Present</div>
+      <div class="innov-bio">A British computer scientist at CERN, Tim Berners-Lee invented the World Wide Web in 1989 — and then gave it away for free. By creating HTTP, HTML, and URLs, he built the architecture that would connect humanity. In an act of extraordinary generosity, he chose not to patent or commercialize his invention. Today the Web underlies over $10 trillion in annual economic activity. He continues to advocate for an open, decentralized web through the World Wide Web Foundation and MIT's Decentralized Information Group.</div>
+      <div class="innov-achiev">
+        <h4>Major Achievements</h4>
+        <ul>
+          <li>Invented the World Wide Web (1989) at CERN</li>
+          <li>Created HTTP, HTML, and URL standards</li>
+          <li>Founded the World Wide Web Consortium (W3C)</li>
+          <li>Knighted by Queen Elizabeth II (2004)</li>
+        </ul>
+      </div>
+      <div class="innov-quote">"The Web is more a social creation than a technical one. I designed it for a social effect — to help people work together."</div>
+    </div>
+
+    <div class="innov-card fade-in">
+      <div class="innov-avatar">🧬</div>
+      <div class="innov-name">Geoffrey Hinton</div>
+      <div class="innov-years">1947 – Present</div>
+      <div class="innov-bio">Known as the "Godfather of Deep Learning," Geoffrey Hinton spent decades pursuing neural networks when the mainstream AI community had largely abandoned the idea. His 2006 paper on deep belief networks, his 2012 AlexNet breakthrough (with students Krizhevsky and Sutskever), and his foundational work on backpropagation and Boltzmann machines catalyzed the current AI revolution. He shared the 2024 Nobel Prize in Physics for his contributions. In 2023, he resigned from Google to speak freely about the existential risks of AI.</div>
+      <div class="innov-achiev">
+        <h4>Major Achievements</h4>
+        <ul>
+          <li>Pioneered backpropagation for training neural networks</li>
+          <li>AlexNet (2012) — triggered the deep learning revolution</li>
+          <li>Boltzmann machines, capsule networks research</li>
+          <li>Nobel Prize in Physics (2024)</li>
+        </ul>
+      </div>
+      <div class="innov-quote">"I think the thing that's really scary is we might be creating something smarter than us. And we have no idea how to control it."</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-header">
+    <span class="section-eyebrow">Visual History</span>
+    <h2 class="section-title">The Gallery of Computing</h2>
+    <p class="section-desc">Iconic machines and moments from five thousand years of computational history.</p>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item"><div class="gallery-item-inner"><div class="gallery-emoji">🧮</div><div class="gallery-label">Abacus (3000 BC)</div></div><div class="gallery-overlay"><div class="gallery-overlay-text">The world's first computing tool</div></div></div>
+    <div class="gallery-item"><div class="gallery-item-inner"><div class="gallery-emoji">🏭</div><div class="gallery-label">ENIAC (1945)</div></div><div class="gallery-overlay"><div class="gallery-overlay-text">First electronic general-purpose computer</div></div></div>
+    <div class="gallery-item"><div class="gallery-item-inner"><div class="gallery-emoji">🖥️</div><div class="gallery-label">UNIVAC I (1951)</div></div><div class="gallery-overlay"><div class="gallery-overlay-text">First commercially available computer</div></div></div>
+    <div class="gallery-item"><div class="gallery-item-inner"><div class="gallery-emoji">📦</div><div class="gallery-label">IBM Mainframe (1960s)</div></div><div class="gallery-overlay"><div class="gallery-overlay-text">Dominated business computing for decades</div></div></div>
+    <div class="gallery-item"><div class="gallery-item-inner"><div class="gallery-emoji">🍎</div><div class="gallery-label">Apple I (1976)</div></div><div class="gallery-overlay"><div class="gallery-overlay-text">Wozniak's revolutionary personal computer</div></div></div>
+    <div class="gallery-item"><div class="gallery-item-inner"><div class="gallery-emoji">🖱️</div><div class="gallery-label">Apple Macintosh (1984)</div></div><div class="gallery-overlay"><div class="gallery-overlay-text">Introduced the GUI to the masses</div></div></div>
+    <div class="gallery-item"><div class="gallery-item-inner"><div class="gallery-emoji">💼</div><div class="gallery-label">First Laptop (1981)</div></div><div class="gallery-overlay"><div class="gallery-overlay-text">Osborne 1 — computing on the move</div></div></div>
+    <div class="gallery-item"><div class="gallery-item-inner"><div class="gallery-emoji">⚡</div><div class="gallery-label">Supercomputer (1976+)</div></div><div class="gallery-overlay"><div class="gallery-overlay-text">Cray-1 ushered in the supercomputing era</div></div></div>
+    <div class="gallery-item"><div class="gallery-item-inner"><div class="gallery-emoji">🤖</div><div class="gallery-label">AI &amp; Robotics (2020s)</div></div><div class="gallery-overlay"><div class="gallery-overlay-text">Intelligence enters the physical world</div></div></div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <div class="section-header centered">
+    <span class="section-eyebrow">Test Your Knowledge</span>
+    <h2 class="section-title">ComputerVerse Quiz</h2>
+    <p class="section-desc">15 questions spanning 5,000 years of computing history. How deep does your knowledge go?</p>
+  </div>
+  <div class="quiz-container" id="quiz-container">
+    <div class="quiz-progress-wrap"><div class="quiz-progress-inner" id="quiz-progress"></div></div>
+    <div id="quiz-qnum" class="quiz-q-num">QUESTION 1 OF 15</div>
+    <div id="quiz-question" class="quiz-question"></div>
+    <div id="quiz-options" class="quiz-options"></div>
+    <div class="quiz-nav">
+      <span id="quiz-score-live" style="font-family:var(--font-mono);font-size:0.8rem;color:var(--text2);">Score: 0</span>
+      <button class="btn-primary" id="quiz-next" style="display:none;" onclick="nextQuestion()">Next →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FUTURE -->
+<section id="future">
+  <div class="section-header">
+    <span class="section-eyebrow">What Comes Next</span>
+    <h2 class="section-title">The Future of Computing</h2>
+    <p class="section-desc">Five frontiers where the next chapter of the computer's story is being written right now.</p>
+  </div>
+  <div class="future-grid">
+    <div class="future-card fade-in">
+      <div class="future-icon">🧠</div>
+      <div class="future-title">Artificial General Intelligence</div>
+      <div class="future-desc">Current AI excels at narrow tasks. AGI — machines that can reason, learn, and generalize across domains as humans do — remains the grand challenge. Leading labs are actively racing toward this milestone. The question is not just can we build it, but whether we can ensure it remains aligned with human values.</div>
+      <span class="future-badge">In Development</span>
+    </div>
+    <div class="future-card fade-in">
+      <div class="future-icon">🤖</div>
+      <div class="future-title">Physical AI &amp; Robotics</div>
+      <div class="future-desc">Robots are leaving controlled factory floors and entering the physical world. Boston Dynamics, Tesla's Optimus, and Figure AI are building humanoid robots capable of operating in human environments. Combined with generalist AI models, robots may soon handle household chores, care for the elderly, and perform surgery with superhuman precision.</div>
+      <span class="future-badge">Emerging Now</span>
+    </div>
+    <div class="future-card fade-in">
+      <div class="future-icon">⚛️</div>
+      <div class="future-title">Quantum Computing</div>
+      <div class="future-desc">Quantum computers use qubits — which exploit superposition and entanglement — to solve certain problems exponentially faster than classical machines. Applications include cracking encryption, simulating molecular interactions for drug discovery, and optimizing logistics at global scale. IBM, Google, and IonQ are racing to achieve fault-tolerant quantum advantage.</div>
+      <span class="future-badge">Early Stage</span>
+    </div>
+    <div class="future-card fade-in">
+      <div class="future-icon">🧬</div>
+      <div class="future-title">Brain-Computer Interfaces</div>
+      <div class="future-desc">Neuralink, BrainGate, and Synchron are implanting electrodes that allow humans to control computers with thought alone. Early trials have enabled paralyzed patients to type and control devices. The long-term vision: seamless merging of biological and digital cognition, enhancing memory, enabling telepathic communication, and radically expanding human capability.</div>
+      <span class="future-badge">Clinical Trials</span>
+    </div>
+    <div class="future-card fade-in">
+      <div class="future-icon">🔮</div>
+      <div class="future-title">Neuromorphic &amp; DNA Computing</div>
+      <div class="future-desc">Intel's Loihi chip mimics the brain's spiking neural architecture to achieve 1000x better energy efficiency for AI workloads. Meanwhile, DNA computing uses biological molecules to store and process data — Microsoft's research suggests a shoebox of DNA could hold all the world's digital data. These paradigms may define the computing of 2050 and beyond.</div>
+      <span class="future-badge">Research Phase</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="footer-logo">ComputerVerse</span>
+      <p>A digital museum dedicated to exploring the complete history of computing — from ancient tools to artificial minds. Built to inspire the next generation of innovators.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigate</h4>
+      <ul class="footer-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#timeline">Timeline</a></li>
+        <li><a href="#generations">Generations</a></li>
+        <li><a href="#innovators">Innovators</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#quiz">Quiz</a></li>
+        <li><a href="#future">Future</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <div class="social-links">
+        <a class="social-link" title="GitHub" aria-label="GitHub">⌨️</a>
+        <a class="social-link" title="LinkedIn" aria-label="LinkedIn">💼</a>
+        <a class="social-link" title="Twitter" aria-label="Twitter">🐦</a>
+        <a class="social-link" title="Email" aria-label="Email">✉️</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 ComputerVerse. Crafted with curiosity about the machines that changed everything.</span>
+    <span class="footer-copy" style="color:var(--accent2);">Built with pure HTML, CSS & JavaScript</span>
+  </div>
+</footer>
+
+<!-- BACK TO TOP -->
+<button id="back-top" title="Back to top" aria-label="Back to top">↑</button>
+
+<script>
+/* ===================== PARTICLES ===================== */
+(function() {
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const COUNT = 80;
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+
+  function Particle() {
+    this.reset();
+  }
+  Particle.prototype.reset = function() {
+    this.x = Math.random() * W;
+    this.y = Math.random() * H;
+    this.r = Math.random() * 1.5 + 0.3;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = (Math.random() - 0.5) * 0.3;
+    this.alpha = Math.random() * 0.5 + 0.1;
+    this.color = Math.random() > 0.5 ? '108,99,255' : '0,212,255';
+  };
+  Particle.prototype.update = function() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+  };
+
+  function init() {
+    resize();
+    particles = Array.from({length: COUNT}, () => new Particle());
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    // Draw connections
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(108,99,255,${0.08 * (1 - dist / 120)})`;
+          ctx.lineWidth = 0.5;
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    // Draw particles
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color},${p.alpha})`;
+      ctx.fill();
+      p.update();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => { resize(); });
+  init(); draw();
+})();
+
+/* ===================== PROGRESS BAR ===================== */
+window.addEventListener('scroll', function() {
+  const scrollTop = window.scrollY;
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docH > 0 ? (scrollTop / docH) * 100 : 0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+
+/* ===================== NAVBAR ACTIVE + BACK TO TOP ===================== */
+const backTop = document.getElementById('back-top');
+window.addEventListener('scroll', function() {
+  backTop.classList.toggle('show', window.scrollY > 400);
+
+  const sections = document.querySelectorAll('section[id]');
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* ===================== HAMBURGER ===================== */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobile-menu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+document.querySelectorAll('.mobile-menu a').forEach(a => {
+  a.addEventListener('click', () => mobileMenu.classList.remove('open'));
+});
+
+/* ===================== THEME ===================== */
+const themeBtn = document.getElementById('theme-btn');
+function applyTheme(mode) {
+  if (mode === 'light') {
+    document.body.classList.add('light-mode');
+    themeBtn.textContent = '🌙 Dark';
+  } else {
+    document.body.classList.remove('light-mode');
+    themeBtn.textContent = '☀️ Light';
+  }
+  localStorage.setItem('cv-theme', mode);
+}
+themeBtn.addEventListener('click', () => {
+  const current = localStorage.getItem('cv-theme') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+applyTheme(localStorage.getItem('cv-theme') || 'dark');
+
+/* ===================== FADE IN OBSERVER ===================== */
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+
+/* ===================== TIMELINE OBSERVER ===================== */
+const tlObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.tl-item').forEach(el => tlObserver.observe(el));
+
+/* ===================== ANIMATED COUNTERS ===================== */
+function animateCounter(el, target, duration) {
+  const start = 0;
+  const startTime = performance.now();
+  function update(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(start + (target - start) * eased).toLocaleString();
+    if (progress < 1) requestAnimationFrame(update);
+    else el.textContent = target.toLocaleString() + (target >= 5000 ? '' : '');
+  }
+  requestAnimationFrame(update);
+}
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const nums = e.target.querySelectorAll('[data-target]');
+      nums.forEach(n => {
+        const t = parseInt(n.dataset.target);
+        animateCounter(n, t, 1600);
+      });
+      statsObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+const statsEl = document.getElementById('stats');
+if (statsEl) statsObserver.observe(statsEl);
+
+/* ===================== SEARCH ===================== */
+const searchData = [
+  { cat: 'Timeline', title: 'Abacus', keywords: ['abacus', '3000 bc', 'ancient', 'calculator', 'beads'] },
+  { cat: 'Timeline', title: 'Pascaline (1642)', keywords: ['pascal', 'pascaline', 'mechanical', '1642', 'blaise'] },
+  { cat: 'Timeline', title: 'Analytical Engine (1837)', keywords: ['babbage', 'analytical engine', '1837', 'mechanical computer'] },
+  { cat: 'Timeline', title: 'Ada Lovelace (1843)', keywords: ['ada', 'lovelace', 'programmer', 'algorithm', '1843'] },
+  { cat: 'Timeline', title: 'Turing Machine (1936)', keywords: ['turing', '1936', 'theoretical', 'universal machine'] },
+  { cat: 'Timeline', title: 'ENIAC (1945)', keywords: ['eniac', '1945', 'vacuum tube', 'electronic', 'mauchly', 'eckert'] },
+  { cat: 'Timeline', title: 'First Generation Computers', keywords: ['first generation', 'vacuum tube', '1940s', '1950s'] },
+  { cat: 'Timeline', title: 'Second Generation Computers', keywords: ['second generation', 'transistor', 'fortran', 'cobol'] },
+  { cat: 'Timeline', title: 'Third Generation Computers', keywords: ['third generation', 'integrated circuit', 'ic', 'ibm 360'] },
+  { cat: 'Timeline', title: 'Fourth Generation — Microprocessors', keywords: ['fourth generation', 'microprocessor', 'intel', 'personal computer', 'pc'] },
+  { cat: 'Timeline', title: 'Internet Revolution (1991)', keywords: ['internet', 'web', 'www', 'berners-lee', '1991'] },
+  { cat: 'Timeline', title: 'AI Era', keywords: ['artificial intelligence', 'ai', 'deep learning', 'neural network', 'gpt'] },
+  { cat: 'Generation', title: 'First Generation (Vacuum Tubes)', keywords: ['first generation', 'vacuum tube', 'univac', 'eniac'] },
+  { cat: 'Generation', title: 'Second Generation (Transistors)', keywords: ['second generation', 'transistor', 'ibm 7090'] },
+  { cat: 'Generation', title: 'Third Generation (Integrated Circuits)', keywords: ['third generation', 'integrated circuit', 'minicomputer'] },
+  { cat: 'Generation', title: 'Fourth Generation (Microprocessors)', keywords: ['fourth generation', 'microprocessor', 'vlsi'] },
+  { cat: 'Generation', title: 'Fifth Generation (AI / Quantum)', keywords: ['fifth generation', 'ai', 'quantum', 'machine learning'] },
+  { cat: 'Innovator', title: 'Charles Babbage', keywords: ['babbage', 'difference engine', 'analytical engine'] },
+  { cat: 'Innovator', title: 'Ada Lovelace', keywords: ['ada', 'lovelace', 'first programmer', 'algorithm'] },
+  { cat: 'Innovator', title: 'Alan Turing', keywords: ['turing', 'enigma', 'ai', 'bletchley'] },
+  { cat: 'Innovator', title: 'Steve Jobs', keywords: ['jobs', 'apple', 'macintosh', 'iphone', 'pixar'] },
+  { cat: 'Innovator', title: 'Bill Gates', keywords: ['gates', 'microsoft', 'windows', 'dos', 'ibm'] },
+  { cat: 'Innovator', title: 'Tim Berners-Lee', keywords: ['berners-lee', 'web', 'www', 'html', 'http', 'cern'] },
+  { cat: 'Innovator', title: 'Geoffrey Hinton', keywords: ['hinton', 'deep learning', 'neural network', 'alexnet', 'backpropagation'] },
+  { cat: 'Technology', title: 'Vacuum Tubes', keywords: ['vacuum tube', 'thermionic', 'triode'] },
+  { cat: 'Technology', title: 'Transistors', keywords: ['transistor', 'bell labs', 'semiconductor'] },
+  { cat: 'Technology', title: 'Integrated Circuits', keywords: ['integrated circuit', 'ic', 'chip', 'silicon', 'kilby'] },
+  { cat: 'Technology', title: 'Microprocessors', keywords: ['microprocessor', 'cpu', 'intel 4004', 'moore\'s law'] },
+  { cat: 'Technology', title: 'Quantum Computing', keywords: ['quantum', 'qubit', 'superposition', 'entanglement'] },
+  { cat: 'Technology', title: 'Deep Learning & AI', keywords: ['deep learning', 'neural network', 'transformer', 'gpt', 'llm'] },
+];
+
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+
+function highlight(text, query) {
+  if (!query) return text;
+  const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  return text.replace(re, '<mark>$1</mark>');
+}
+
+searchInput.addEventListener('input', function() {
+  const q = this.value.trim().toLowerCase();
+  if (!q) { searchResults.classList.remove('visible'); searchResults.innerHTML = ''; return; }
+  const matches = searchData.filter(item => item.keywords.some(k => k.includes(q)) || item.title.toLowerCase().includes(q)).slice(0, 8);
+  if (!matches.length) { searchResults.innerHTML = '<div class="search-result-item"><span class="hit-title" style="color:var(--text2)">No results found</span></div>'; }
+  else {
+    searchResults.innerHTML = matches.map(m =>
+      `<div class="search-result-item">
+        <div class="hit-cat">${m.cat}</div>
+        <div class="hit-title">${highlight(m.title, this.value.trim())}</div>
+      </div>`
+    ).join('');
+  }
+  searchResults.classList.add('visible');
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-wrap')) {
+    searchResults.classList.remove('visible');
+  }
+});
+
+/* ===================== QUIZ ===================== */
+const questions = [
+  { q: "What year was the ENIAC computer completed?", opts: ["1942","1945","1951","1939"], ans: 1 },
+  { q: "Who is considered the 'Father of the Computer' for designing the Analytical Engine?", opts: ["Alan Turing","Ada Lovelace","Charles Babbage","John von Neumann"], ans: 2 },
+  { q: "What technology defined First Generation computers?", opts: ["Transistors","Integrated Circuits","Vacuum Tubes","Microprocessors"], ans: 2 },
+  { q: "Ada Lovelace wrote an algorithm for which machine?", opts: ["Difference Engine","ENIAC","Analytical Engine","Pascaline"], ans: 2 },
+  { q: "Who invented the World Wide Web in 1989?", opts: ["Vint Cerf","Tim Berners-Lee","Bill Gates","Marc Andreessen"], ans: 1 },
+  { q: "What replaced vacuum tubes in Second Generation computers?", opts: ["Microprocessors","Integrated Circuits","Transistors","Capacitors"], ans: 2 },
+  { q: "The Intel 4004, released in 1971, was the world's first what?", opts: ["Transistor","Microprocessor","Integrated Circuit","Hard Drive"], ans: 1 },
+  { q: "Which famous wartime project did Alan Turing work on at Bletchley Park?", opts: ["Manhattan Project","Colossus","Breaking the Enigma Code","ENIAC Programming"], ans: 2 },
+  { q: "Which computer introduced the Graphical User Interface (GUI) to the mass market in 1984?", opts: ["IBM PC","Commodore 64","Apple Macintosh","Altair 8800"], ans: 2 },
+  { q: "What does 'ENIAC' stand for?", opts: ["Electronic Numerical Integrator And Computer","Electronic Neural Integration Automated Computer","Extended Numerical Input Advanced Computing","Electronic Networked Intelligence And Computing"], ans: 0 },
+  { q: "What year did the World Wide Web become publicly available?", opts: ["1989","1993","1991","1995"], ans: 2 },
+  { q: "Which generation of computers used Integrated Circuits (ICs)?", opts: ["First","Second","Third","Fourth"], ans: 2 },
+  { q: "Geoffrey Hinton is widely known as the 'Godfather of' what?", opts: ["Quantum Computing","The Internet","Deep Learning","Robotics"], ans: 2 },
+  { q: "Which programming language was named after Ada Lovelace?", opts: ["Ada","ALGOL","COBOL","Pascal"], ans: 0 },
+  { q: "What fundamental concept did the Abacus introduce that underpins all modern computers?", opts: ["Boolean Logic","Binary Code","Positional Notation","Stored Program Concept"], ans: 2 },
+];
+
+let currentQ = 0, score = 0, answered = false;
+
+function loadQuestion() {
+  answered = false;
+  const q = questions[currentQ];
+  document.getElementById('quiz-qnum').textContent = `QUESTION ${currentQ + 1} OF ${questions.length}`;
+  document.getElementById('quiz-question').textContent = q.q;
+  document.getElementById('quiz-progress').style.width = `${(currentQ / questions.length) * 100}%`;
+  document.getElementById('quiz-next').style.display = 'none';
+  const letters = ['A','B','C','D'];
+  document.getElementById('quiz-options').innerHTML = q.opts.map((opt, i) =>
+    `<button class="quiz-opt" onclick="selectAnswer(${i})">
+      <span class="quiz-opt-letter">${letters[i]}</span>${opt}
+    </button>`
+  ).join('');
+}
+
+window.selectAnswer = function(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[currentQ];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts[q.ans].classList.add('correct');
+  if (idx !== q.ans) opts[idx].classList.add('wrong');
+  else score++;
+  document.getElementById('quiz-score-live').textContent = `Score: ${score}`;
+  document.getElementById('quiz-next').style.display = 'block';
+  opts.forEach(o => o.style.pointerEvents = 'none');
+};
+
+window.nextQuestion = function() {
+  currentQ++;
+  if (currentQ >= questions.length) showResult();
+  else loadQuestion();
+};
+
+function showResult() {
+  const pct = Math.round((score / questions.length) * 100);
+  let msg = '';
+  if (pct >= 90) msg = '🏆 Outstanding! You\'re a computing historian!';
+  else if (pct >= 70) msg = '✨ Great work! Solid knowledge of computing history.';
+  else if (pct >= 50) msg = '📚 Good effort! Explore the timeline to sharpen your knowledge.';
+  else msg = '🔍 Keep exploring! There\'s so much fascinating history to discover.';
+
+  document.getElementById('quiz-container').innerHTML = `
+    <div class="quiz-score-screen">
+      <div class="quiz-score-label">Your Final Score</div>
+      <div class="quiz-score-big">${score}/${questions.length}</div>
+      <div style="font-family:var(--font-mono);font-size:1rem;color:var(--accent2);margin-bottom:16px;">${pct}% Correct</div>
+      <div class="quiz-feedback">${msg}</div>
+      <button class="btn-primary" onclick="restartQuiz()">↺ Restart Quiz</button>
+    </div>
+  `;
+}
+
+window.restartQuiz = function() {
+  currentQ = 0; score = 0;
+  document.getElementById('quiz-container').innerHTML = `
+    <div class="quiz-progress-wrap"><div class="quiz-progress-inner" id="quiz-progress"></div></div>
+    <div id="quiz-qnum" class="quiz-q-num"></div>
+    <div id="quiz-question" class="quiz-question"></div>
+    <div id="quiz-options" class="quiz-options"></div>
+    <div class="quiz-nav">
+      <span id="quiz-score-live" style="font-family:var(--font-mono);font-size:0.8rem;color:var(--text2);">Score: 0</span>
+      <button class="btn-primary" id="quiz-next" style="display:none;" onclick="nextQuestion()">Next →</button>
+    </div>
+  `;
+  loadQuestion();
+};
+
+loadQuestion();
+
+/* ===================== SMOOTH SCROLL ===================== */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
